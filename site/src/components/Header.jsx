@@ -11,8 +11,9 @@ const Header = () => {
     >
       <div className="header-content">
         <div className="logo">
-          <MessageCircle size={32} className="logo-icon" />
-          <h1>ASK SSN</h1>
+          <h1>ASK</h1>
+          <img src="./src/assets/logo.png" height="10%" width = "10%"/>
+          
         </div>
         <div className="header-subtitle">
           Your AI Assistant for SSN Related Queries
