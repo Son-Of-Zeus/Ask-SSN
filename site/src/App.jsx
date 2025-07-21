@@ -30,6 +30,54 @@ function App() {
                 timestamp: new Date()
                 }} />
             </div>
+            <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'user',
+                content: 'hi',
+                timestamp: new Date()
+                }} />
+            </div>
+              <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'bot',
+                content: 'hello',
+                timestamp: new Date()
+                }} />
+            </div>
+            <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'user',
+                content: 'hi',
+                timestamp: new Date()
+                }} />
+            </div>
+              <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'bot',
+                content: 'hello',
+                timestamp: new Date()
+                }} />
+            </div>
+            <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'user',
+                content: 'hi',
+                timestamp: new Date()
+                }} />
+            </div>
+              <div>
+              <ChatMessage message={{
+                id: 1,
+                type: 'bot',
+                content: 'hello',
+                timestamp: new Date()
+                }} />
+            </div>
           </div>
         </div>
 

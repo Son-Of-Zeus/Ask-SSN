@@ -16,9 +16,6 @@ const ChatInput = () => {
           <button className="send-button">
             <Send size={20} />
           </button>
-          <button className="file-button">
-            <FileUpIcon size = {20}/>
-          </button>
         </div>
       </div>
     </div>
