@@ -9,6 +9,9 @@ import ChatMessage from './components/ChatMessage'
 
 
 export default function Home() {
+    const [messages, setMessages] = useState([
+
+  ])
   const handleSendButton = (inputText) => {
     setMessages([
       ...messages,
@@ -20,9 +23,7 @@ export default function Home() {
       }
     ])
   } 
-  const [messages, setMessages] = useState([
 
-  ])
   return (
 
     <div className="app">
