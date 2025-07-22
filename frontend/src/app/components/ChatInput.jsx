@@ -1,7 +1,20 @@
+'use client';
+import { useState } from 'react';
 import { motion } from 'framer-motion'
 import { FileUpIcon, Send } from 'lucide-react'
 
-const ChatInput = () => {
+
+const ChatInput = ({onSendClick}) => {
+  const [inputText,setInputText] = useState('');
+
+  const handleSend = ()=>
+  {
+    if (inputText.trim())
+    {
+      onSendClick(inputText);
+      setInputText('');
+    }
+  }
   return (
     <div 
       className="chat-input-container"
@@ -12,8 +25,11 @@ const ChatInput = () => {
             type="text"
             placeholder="Ask me anything about SSN..."
             className="message-input"
+            value={inputText}
+            onChange={(e)=>setInputText(e.target.value)}
+            onKeyPress={(e)=>e.key == 'Enter' && handleSend()}
           />
-          <button className="send-button">
+          <button className="send-button" onClick={handleSend}>
             <Send size={20} />
           </button>
         </div>
