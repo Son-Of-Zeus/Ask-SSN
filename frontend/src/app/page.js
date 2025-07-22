@@ -30,7 +30,7 @@ export default function Home() {
               <ChatMessage message={{
                 id: 1,
                 type: 'bot',
-                content: 'hello',
+                content: 'dasdkfjlaksjdflaksjdfkajsldfjlkasjdflkajsdf',
                 timestamp: new Date()
                 }} />
             </div>
