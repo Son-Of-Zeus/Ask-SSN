@@ -10,6 +10,12 @@ cd backend
 ```
 uv sync
 ```
+- Create a .env file inside backend, with the following content.
+```
+GEMINI_API_KEY='<Your-Api-Key>'
+```
+> Obtain the api key from https://aistudio.google.com/
+
 
 ## Running the server.
 

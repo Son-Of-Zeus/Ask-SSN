@@ -1,8 +1,11 @@
 # This file will contain all the application logic and api endpoints
-
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from models import ChatRequest, ChatResponse
 from fastapi.middleware.cors import CORSMiddleware
+from litellm import completion
+
+load_dotenv()
 
 origins = [
     "http://localhost:3000",
@@ -21,4 +24,10 @@ app.add_middleware(
 
 @app.post("/api/chat_completion/")
 def main(query: ChatRequest):
-    return ChatResponse(reponse="I am a humble ssn bot")
+    response = completion(
+    model="gemini/gemma-3-27b-it", 
+    messages=query.query
+    )
+
+    model_response = response['choices'][0]['message']['content']
+    return ChatResponse(reponse=model_response)
