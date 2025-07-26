@@ -1,5 +1,6 @@
 'use client';
-import { useState } from "react";
+import { useRef } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Header from './components/Header'
 import ChatInput from './components/ChatInput'
@@ -12,6 +13,18 @@ export default function Home() {
     const [messages, setMessages] = useState([
 
   ])
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () =>
+  {
+    messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
+  }
+
+  useEffect(()=>
+  {
+    scrollToBottom();
+  },[messages]);
   const handleSendButton = (inputText) => {
     setMessages([
       ...messages,
@@ -40,6 +53,7 @@ export default function Home() {
                   <ChatMessage key = {index} message={message}/>
                 )
               )}
+              <div ref ={messagesEndRef}/>
             </div>
           </div>
         </div>
