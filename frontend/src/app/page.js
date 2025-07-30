@@ -21,10 +21,11 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
   }
 
-  useEffect(()=>
-  {
+  useEffect(() => {
     scrollToBottom();
-  },[messages]);
+  }, [messages]);
+
+
   const handleSendButton = (inputText) => {
     setMessages([
       ...messages,
@@ -35,7 +36,45 @@ export default function Home() {
         timestamp: new Date()
       }
     ])
-  } 
+
+    fetch('/api/chat', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({ message: inputText }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+      // You might want to update the chat UI with the response here
+
+      setMessages([
+      ...messages,
+      {
+        id: 1,
+        type: "bot",
+        content: data.content,
+        timestamp: new Date()
+      }
+    ])
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+  // const handleBotResponse = (inputText) => {
+  //     setMessages([
+  //     ...messages,
+  //     {
+  //       id: 1,
+  //       type: "bot",
+  //       content: inputText,
+  //       timestamp: new Date()
+  //     }
+  //   ])
+  // }
 
   return (
 
@@ -58,7 +97,7 @@ export default function Home() {
           </div>
         </div>
 
-        <ChatInput onSendClick={handleSendButton} ></ChatInput>
+        <ChatInput onSendClick={handleSendButton}></ChatInput>
       </div>
     </div>
 
