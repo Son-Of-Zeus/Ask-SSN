@@ -7,99 +7,97 @@ import ChatInput from './components/ChatInput'
 import './App.css'
 import ChatMessage from './components/ChatMessage'
 
-
-
 export default function Home() {
-    const [messages, setMessages] = useState([
-
-  ])
-
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () =>
-  {
+  
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
   }
-
+  
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  const handleSendButton = async (inputText) => {
+    const userMessage = {
+      id: Date.now(),
+      type: "user",
+      content: inputText,
+      timestamp: new Date()
+    };
 
-  const handleSendButton = (inputText) => {
-    setMessages([
-      ...messages,
-      {
-        id: 1,
-        type: "user",
-        content: inputText,
-        timestamp: new Date()
-      }
-    ])
+    // Add user message and loading indicator
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setIsLoading(true);
 
-    fetch('/api/chat', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // body: JSON.stringify({ message: inputText }),
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({ message: inputText }),
+      });
+
+      const data = await response.json();
       console.log('Success:', data);
-      // You might want to update the chat UI with the response here
-
-      setMessages([
-      ...messages,
-      {
-        id: 1,
+      
+      const botMessage = {
+        id: Date.now() + 1,
         type: "bot",
-        content: data.content,
+        content: data.message,
         timestamp: new Date()
-      }
-    ])
-    })
-    .catch((error) => {
+      };
+
+      // Add bot response
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+      
+    } catch (error) {
       console.error('Error:', error);
-    });
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: "bot",
+        content: "Sorry, there was an error processing your message.",
+        timestamp: new Date()
+      };
+
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  // const handleBotResponse = (inputText) => {
-  //     setMessages([
-  //     ...messages,
-  //     {
-  //       id: 1,
-  //       type: "bot",
-  //       content: inputText,
-  //       timestamp: new Date()
-  //     }
-  //   ])
-  // }
-
   return (
-
     <div className="app">
       <div className="chat-container">
         <Header />
-        
         <div className="messages-container">
           <div className="messages-wrapper">
             <div className="welcome-message">
             </div>
             <div>
-              {messages.map((message,index) =>
-                (
-                  <ChatMessage key = {index} message={message}/>
-                )
+              {messages.map((message) => (
+                <ChatMessage key={message.id} message={message}/>
+              ))}
+              {isLoading && (
+                <div className="loading-message">
+                  <ChatMessage message={{
+                    id: 'loading',
+                    type: 'bot',
+                    content: 'Thinking...',
+                    timestamp: new Date()
+                  }} />
+                </div>
               )}
-              <div ref ={messagesEndRef}/>
+              <div ref={messagesEndRef}/>
             </div>
           </div>
         </div>
-
-        <ChatInput onSendClick={handleSendButton}></ChatInput>
+        <ChatInput onSendClick={handleSendButton} disabled={isLoading}></ChatInput>
       </div>
     </div>
-
   );
 }
