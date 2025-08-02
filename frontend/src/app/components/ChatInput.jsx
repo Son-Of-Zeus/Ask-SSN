@@ -4,17 +4,18 @@ import { motion } from 'framer-motion'
 import { FileUpIcon, Send } from 'lucide-react'
 
 
-const ChatInput = ({onSendClick}) => {
+const ChatInput = ({onSendClick, updateChat}) => {
   const [inputText,setInputText] = useState('');
 
   const handleSend = ()=>
   {
-    if (inputText.trim())
+    if (inputText.trim()) // I'm assuming this is to handle empty enters.
     {
       onSendClick(inputText);
       setInputText('');
     }
   }
+
   return (
     <div 
       className="chat-input-container"

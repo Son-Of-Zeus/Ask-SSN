@@ -7,6 +7,7 @@ from litellm import completion
 
 load_dotenv()
 
+
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -24,6 +25,8 @@ app.add_middleware(
 
 @app.post("/api/chat_completion/")
 def main(query: ChatRequest):
+
+    print(query) 
     response = completion(
     model="gemini/gemma-3-27b-it", 
     messages=query.query
