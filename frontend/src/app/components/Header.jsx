@@ -1,7 +1,12 @@
 import { motion } from 'framer-motion'
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, RotateCw } from 'lucide-react'
 
 const Header = () => {
+
+  const handleRefresh = ()=>
+  {
+    window.location.reload();
+  }
   return (
     <div
       className="header"
@@ -19,6 +24,11 @@ const Header = () => {
           Your AI Assistant for SSN Related Queries
         </div>
       </div>
+
+    <button className='refresh-button' onClick={handleRefresh} title='Start a new chat'>
+      <RotateCw size={'1.25rem'}>
+      </RotateCw>
+    </button>
     </div>
   )
 }

@@ -26,7 +26,7 @@ body {
   margin-left: auto;
 }
 
-.bot-message {
+.assistant-message {
   margin-right: auto;
 }
 
@@ -44,7 +44,7 @@ body {
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
 }
 
-.bot-message .message-avatar {
+.assistant-message .message-avatar {
   background: rgba(59, 130, 246, 0.2);
   border-color: rgba(59, 130, 246, 0.3);
 }
@@ -81,7 +81,7 @@ body {
   word-wrap: break-word;
 }
 
-.bot-message .message-text {
+.assistant-message .message-text {
   background: rgba(59, 130, 246, 0.1);
   border-color: rgba(59, 130, 246, 0.2);
 }
@@ -98,7 +98,6 @@ body {
 }
 
 .app {
-  height: 100dvh; /* Dynamic viewport height for mobile */
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -136,7 +135,6 @@ body {
   width: 100%;
   max-width: 75rem;
   margin: 0 auto;
-  /* Use Flexbox for robust centering */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,8 +166,8 @@ body {
 .header-subtitle {
   color: rgba(255, 255, 255, 0.7);
   font-size: clamp(0.8rem, 2.5vw, 1rem);
-  margin-top: 0.25rem; /* Adjust spacing between title and subtitle */
-  text-align: center; /* Ensure text within subtitle is centered */
+  margin-top: 0.25rem; 
+  text-align: center;
 }
 
 .messages-container {
@@ -259,7 +257,7 @@ body {
   outline: none;
   color: white;
   padding: 0.625rem 0;
-  font-size: 16px; /* Prevents iOS zoom */
+  font-size: 16px; 
 }
 
 .message-input::placeholder {
@@ -311,7 +309,32 @@ body {
   background: rgba(59, 130, 246, 0.7);
 }
 
-/* Mobile Optimizations */
+.loading-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  background: rgba(59, 130, 246, 0.1);
+  backdrop-filter: blur(0.625rem);
+  border: 0.0625rem solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  color: #60a5fa; 
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 48rem) {
   .messages-wrapper {
     padding: 1.25rem;

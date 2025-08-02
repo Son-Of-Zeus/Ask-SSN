@@ -6,7 +6,7 @@ const ChatMessage = ({ message }) => {
   
   return (
     <div
-      className={`message ${isBot ? 'bot-message' : 'user-message'}`}
+      className={`message ${isBot ? 'assistant-message' : 'user-message'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
