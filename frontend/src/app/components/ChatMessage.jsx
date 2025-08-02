@@ -2,10 +2,10 @@ import { motion } from 'framer-motion'
 import { Bot, User } from 'lucide-react'
 
 const ChatMessage = ({ message }) => {
-  const isBot = message.type === 'bot'
+  const isBot = message.type === 'assistant'
   
   return (
-    <motion.div
+    <div
       className={`message ${isBot ? 'bot-message' : 'user-message'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -29,7 +29,7 @@ const ChatMessage = ({ message }) => {
           })}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
