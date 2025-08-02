@@ -33,12 +33,17 @@ export default function Home() {
     setIsLoading(true);
 
     try {
+      const query = [...messages, userMessage].map(message => ({
+        role: message.type,
+        content: message.content
+      }));
+
       const response = await fetch('/api/chat', {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({ message: inputText }),
+        body: JSON.stringify({ query }),
       });
 
       const data = await response.json();
@@ -46,20 +51,21 @@ export default function Home() {
       
       const botMessage = {
         id: Date.now() + 1,
-        type: "bot",
-        content: data.message,
+        type: "assistant",
+        content: data.reponse,
         timestamp: new Date()
       };
 
       // Add bot response
       setMessages(prevMessages => [...prevMessages, botMessage]);
+      console.log(messages);
       
     } catch (error) {
       console.error('Error:', error);
       
       const errorMessage = {
         id: Date.now() + 1,
-        type: "bot",
+        type: "assistant",
         content: "Sorry, there was an error processing your message.",
         timestamp: new Date()
       };
@@ -86,7 +92,7 @@ export default function Home() {
                 <div className="loading-message">
                   <ChatMessage message={{
                     id: 'loading',
-                    type: 'bot',
+                    type: 'assistant',
                     content: 'Thinking...',
                     timestamp: new Date()
                   }} />

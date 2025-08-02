@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { Bot, User } from 'lucide-react'
 
 const ChatMessage = ({ message }) => {
-  const isBot = message.type === 'bot'
+  const isBot = message.type === 'assistant'
   
   return (
     <div
