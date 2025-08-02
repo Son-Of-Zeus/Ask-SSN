@@ -203,3 +203,10 @@ __marimo__/
 .streamlit/secrets.toml
 
 test_bed/
+
+# Vector DB
+qdrant_storage/*
+
+# Bot's knowledge
+knowledge_base/*
+processed_documents/*
