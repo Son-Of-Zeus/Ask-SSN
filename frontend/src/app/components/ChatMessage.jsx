@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Bot, User } from 'lucide-react'
-
+import Citations from './Citations'
 const ChatMessage = ({ message }) => {
   const isBot = message.type === 'assistant'
   
@@ -22,6 +22,7 @@ const ChatMessage = ({ message }) => {
         <div className="message-text">
           {message.content}
         </div>
+        {isBot && <Citations citations={message.citations}></Citations>}
         <div className="message-time">
           {message.timestamp.toLocaleTimeString([], { 
             hour: '2-digit', 

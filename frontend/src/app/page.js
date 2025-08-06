@@ -48,17 +48,16 @@ export default function Home() {
       });
 
       const data = await response.json();
-      console.log('Success:', data);
       const botMessage = {
         id: Date.now() + 1,
         type: "assistant",
         content: data.response,
+        citations: data.citations || [],
         timestamp: new Date()
       };
 
-      // Add bot response
       setMessages(prevMessages => [...prevMessages, botMessage]);
-      console.log(messages);
+
       
     } catch (error) {
       console.error('Error:', error);
