@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { Bot, User } from 'lucide-react'
 import Citations from './Citations'
+import Markdown from 'react-markdown'
+
 const ChatMessage = ({ message }) => {
   const isBot = message.type === 'assistant'
   
@@ -20,7 +22,7 @@ const ChatMessage = ({ message }) => {
       </div>
       <div className="message-content">
         <div className="message-text">
-          {message.content}
+          <Markdown>{message.content}</Markdown>
         </div>
         {isBot && <Citations citations={message.citations}></Citations>}
         <div className="message-time">
