@@ -59,33 +59,34 @@ def chat_completion(request: ChatRequest):
         raise HTTPException(status_code=400, detail="No user message found in the query.")
 
     router_prompt_template = """
-    You are a master routing agent for an academic chatbot. Based on the entire chat history, you must perform two tasks:
-    1. Decide which tool to use: 'rag_query_tool' for specific questions about SSN College of Engineering, or 'general_conversation_tool' for small talk.
-    2. If you choose 'rag_query_tool', you MUST reformulate the user's latest query into a standalone, detailed question that can be understood without the chat history.
+You are a routing controller for an academic assistant focused on SSN College of Engineering.
+Your job:
+1) Decide which tool to use:
+   - "rag_query_tool" ONLY if the latest user message asks a specific, factual question about SSN College of Engineering that can be answered from a knowledge base.
+   - "general_conversation_tool" otherwise (small talk, ambiguous, opinion requests, off-scope).
+2) If "rag_query_tool" is chosen, you MUST reformulate ONLY the latest user message into a single, self-contained question WITHOUT relying on earlier context.
 
-    **Chat History:**
-    {chat_history}
+Rules:
+- Respond with JSON only. No prose, no code fences, no explanations.
+- If the latest user message is ambiguous or not directly answerable via factual SSN context, choose "general_conversation_tool".
+- Do NOT invent or assume any details.
+- Do NOT include any keys beyond those specified.
 
-    **Your Task:**
-    Analyze the history. If the latest user query is a specific question about SSN, formulate a clear, self-contained question for the RAG system. If it's small talk, just select the general tool.
+Chat History:
+{chat_history}
 
-    Respond with ONLY a JSON object with the following format.
+Output format (choose exactly one):
+For RAG:
+{{
+  "tool_name": "rag_query_tool",
+  "query_for_rag": "<self-contained question about SSN>"
+}}
 
-    For specific questions:
-    {{
-        "tool_name": "rag_query_tool",
-        "query_for_rag": "A self-contained, reformulated question based on the history."
-    }}
-
-    For general conversation:
-    {{
-        "tool_name": "general_conversation_tool"
-    }}
-
-    Example:
-    - History: "user: Tell me about the IT department\\nassistant: Here is the information about the IT department.\\nuser: what about for ECE?"
-    - Your JSON Response: {{"tool_name": "rag_query_tool", "query_for_rag": "Tell me about the curriculum for the ECE department."}}
-    """
+For general conversation:
+{{
+  "tool_name": "general_conversation_tool"
+}}
+"""
     
     routing_prompt = router_prompt_template.format(chat_history=chat_history_str)
     router_response = Settings.llm.complete(routing_prompt)
@@ -105,21 +106,28 @@ def chat_completion(request: ChatRequest):
         if not rag_query:
             raise HTTPException(status_code=500, detail="Router decided on RAG but failed to generate a query.")
         
-        gemma_qa_prompt_str = """
-            You are ASK-SSN Bot, a professional and precise academic assistant for SSN College of Engineering.
-            Your sole purpose is to answer questions based *strictly* on the context information provided below.Here are some intructions to be followed:
-            - Use markdown to format your answer.
-            - If the question isn't clear, ask users clarifying questions. 
-            - If the answer cannot be found in the context, you must respond saying you don't know the answer.
+        gemma_qa_prompt_str = gemma_qa_prompt_str = """
+You are ASK-SSN Bot, an academic assistant for SSN College of Engineering.
+Follow these rules strictly:
+- Answer ONLY using the provided CONTEXT. Treat the CONTEXT as the single source of truth.
+- If the answer is not explicitly present in CONTEXT, state that you do not know based on the available context and ask a brief, specific clarification question if appropriate.
+- Do NOT assume, guess, generalize, or infer beyond the CONTEXT.
+- If the user’s question is unclear or underspecified, ask a concise clarifying question instead of answering.
+- Always format your response in valid Markdown.
+- Keep the answer precise, factual, and minimal; avoid verbosity and speculation.
+- Do NOT include external links, policies, or references not present in CONTEXT.
+- If there are multiple possible interpretations, list them and ask which one applies, without choosing on your own.
+- Never fabricate page numbers, document titles, data points, dates, or regulations.
 
-            You are provided with context from a RAG Tool that pulled in releavant information according to the user query
+CONTEXT:
+{context_str}
 
-            CONTEXT:
-            {context_str}
+USER QUESTION:
+{query_str}
 
-            QUERY: {query_str}
-            ANSWER:
-        """
+Produce a concise Markdown response now:
+"""
+
         qa_template = PromptTemplate(gemma_qa_prompt_str)
         query_engine = index.as_query_engine(similarity_top_k=3, text_qa_template=qa_template)
         
@@ -140,18 +148,21 @@ def chat_completion(request: ChatRequest):
         return ChatResponse(response=str(rag_response), citations=citations)
     
     else:
-        general_prompt_template = f"""
-        You are ASK-SSN bot, a friendly and professional conversational AI assistant for SSN College of Engineering.
-        Your purpose is to answer questions about SSN's curriculum, regulations and academic rules.
-        Engage in a natural conversation based on the history. Politely decline any questions outside your scope (like news, weather, or personal opinions).
+        general_prompt_template = fgeneral_prompt_template = f"""
+You are ASK-SSN Bot, a friendly and professional assistant restricted to SSN College of Engineering topics (curriculum, regulations, academic rules).
+Strict rules:
+- Stay on SSN academic topics only; if the request is off-scope (e.g., news, weather, personal opinions), politely decline and suggest asking about SSN topics.
+- Never assume or invent facts.
+- If the user’s request is ambiguous or lacks specifics, ask a brief, targeted clarification question before answering.
+- Always respond in valid Markdown.
+- Be concise and factual.
 
-        Maintain your persona and continue the conversation below.
+Chat History:
+{chat_history_str}
 
-        **Chat History:**
-        {chat_history_str}
-        
-        assistant:
-        """
+assistant:
+"""
+
         
         general_response = Settings.llm.complete(general_prompt_template)
 
