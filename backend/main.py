@@ -59,16 +59,21 @@ def chat_completion(request: ChatRequest):
         raise HTTPException(status_code=400, detail="No user message found in the query.")
 
     router_prompt_template = """
-You are a routing controller for an academic assistant focused on SSN College of Engineering.
+    You are a routing controller for an academic assistant for SSN College of Engineering.
+Your knowledge base contains the full text of:
+- SSN College of Engineering - Regulation 2021
+- Computer Science & Engineering (CSE) Syllabus - 2021
+
 Your job:
-1) Decide which tool to use:
-   - "rag_query_tool" ONLY if the latest user message asks a specific, factual question about SSN College of Engineering that can be answered from a knowledge base.
-   - "general_conversation_tool" otherwise (small talk, ambiguous, opinion requests, off-scope).
-2) If "rag_query_tool" is chosen, you MUST reformulate ONLY the latest user message into a single, self-contained question WITHOUT relying on earlier context.
+1) Analyze the latest user message in the chat history.
+2) Decide which tool to use:
+   - "rag_query_tool": Use this ONLY if the message asks a specific, factual question that can be answered by consulting the Regulation 2021, CSE Syllabus 2021. This includes questions about course codes, credits, prerequisites, grading policies, attendance rules, examination procedures, and lists of subjects per semester for CSE.
+   - "general_conversation_tool": Use this for all other cases, including greetings, follow-up conversations, or questions outside the scope of the specified documents.
+3) If you choose "rag_query_tool", you MUST reformulate ONLY the latest user message into a single, self-contained question for the knowledge base.
 
 Rules:
 - Respond with JSON only. No prose, no code fences, no explanations.
-- If the latest user message is ambiguous or not directly answerable via factual SSN context, choose "general_conversation_tool".
+- If the latest message is ambiguous, a greeting, or not a direct question about the documents, choose "general_conversation_tool".
 - Do NOT invent or assume any details.
 - Do NOT include any keys beyond those specified.
 
@@ -79,7 +84,7 @@ Output format (choose exactly one):
 For RAG:
 {{
   "tool_name": "rag_query_tool",
-  "query_for_rag": "<self-contained question about SSN>"
+  "query_for_rag": "<self-contained question about SSN regulations or CSE/ECE syllabus>"
 }}
 
 For general conversation:
@@ -117,6 +122,7 @@ Follow these rules strictly:
 - Keep the answer precise, factual, and minimal; avoid verbosity and speculation.
 - Do NOT include external links, policies, or references not present in CONTEXT.
 - If there are multiple possible interpretations, list them and ask which one applies, without choosing on your own.
+- Do NOT EVER include references to page numbers in the response.
 - Never fabricate page numbers, document titles, data points, dates, or regulations.
 
 CONTEXT:
