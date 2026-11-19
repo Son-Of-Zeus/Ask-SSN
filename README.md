@@ -1,6 +1,16 @@
 # Ask-SSN
 
-Ask-SSN is a chat assistant for SSN College of Engineering. It answers questions about college policies and curricula from PDFs that you add to its knowledge base. The chat shows the source document, page label, and passage when that information is available.
+Ask-SSN helps students at SSN College of Engineering find answers in academic documents.
+
+## About the project
+
+Course requirements, semester subjects, and academic rules are spread across curriculum and regulation PDFs. Ask-SSN gives students one place to ask questions about those documents in plain language.
+
+- Which subjects are in the first semester of the CSE curriculum?
+- What are the credit requirements for my program?
+- What do the academic regulations say about course prerequisites?
+
+The assistant searches the PDFs in its knowledge base and uses the relevant passages to answer. The chat shows the source document, page label, and excerpt when available, so students can check the answer against the original text.
 
 ## How it works
 
@@ -54,6 +64,6 @@ Install [uv](https://docs.astral.sh/uv/), Node.js 20 or later, Docker, and Ollam
    npm run dev
    ```
 
-Open [the chat](http://localhost:3000) and ask a question that your PDF covers, such as “Which subjects are in the first semester of the CSE curriculum?” Check the cited page against the PDF. You can also try `POST /api/chat_completion/` in the [API docs](http://127.0.0.1:8000/docs).
+Open [the chat](http://localhost:3000) and ask a question that your PDF covers. You can also try `POST /api/chat_completion/` in the [API docs](http://127.0.0.1:8000/docs).
 
 See the [backend guide](backend/README.md) for more detail on managing the knowledge base.
